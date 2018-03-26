@@ -1,12 +1,10 @@
 /*
- ============================================================================
- Name        : phone-controller.c
- Author      : 
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
+ * main.cpp
+ *
+ *  Created on: Mar 26, 2018
+ *      Author: Michal Kielan
  */
+
 
 #include "tests.h"
 

@@ -4,6 +4,7 @@
  *  Created on: Mar 26, 2018
  *      Author: Michal Kielan
  */
+
 #include "frame_msg.h"
 
 #include <string.h>

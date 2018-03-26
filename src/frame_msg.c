@@ -39,9 +39,9 @@ int buf2frame(FrameMessage* dst, const char* const src)
 }
 
 
-char calc_crc(const FrameMessage* const msg)
+static uint8_t calc_crc(const FrameMessage* const msg)
 {
-  char crc = 0;
+  uint8_t crc = 0;
   const int len = sizeof(FrameMessage) - 1;
   const char* msg_ptr = (char*)&msg;
 
@@ -72,7 +72,7 @@ int set_crc(FrameMessage* msg)
   }
   else
   {
-    const char crc = calc_crc(msg);
+    const uint8_t crc = calc_crc(msg);
     msg->crc = crc;
     return 0;
   }
@@ -82,12 +82,12 @@ int check_crc(const FrameMessage* const msg)
 {
   if(msg == NULL)
   {
-    return EINVAL;
+    return -EINVAL;
   }
   else
   {
     const char crc = calc_crc(msg);
-    return (msg->crc == crc) ? 0 : EDOM;
+    return (msg->crc == crc) ? 0 : -EDOM;
   }
 }
 
