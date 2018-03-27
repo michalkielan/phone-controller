@@ -88,7 +88,7 @@ int check_crc(const FrameMessage* const msg)
   }
   else
   {
-    const char crc = calc_crc(msg);
+    const uint8_t crc = calc_crc(msg);
     return (msg->crc == crc) ? 0 : -EDOM;
   }
 }
