@@ -5,7 +5,8 @@
  *      Author: Michal Kielan
  */
 
-#include "tests.h"
+#include "frame-tests.h"
+
 #include "frame_msg.h"
 
 #include <string.h>
@@ -61,7 +62,7 @@ TEST_F(FrameMessageTest, BufFrameNullCheck)
   EXPECT_NE(0, buf2frame(NULL, NULL));
 }
 
-TEST_F(FrameMessageTest, ChecksumTest)
+TEST_F(FrameMessageTest, ChecksumNullTest)
 {
   EXPECT_NE(0, set_crc(NULL));
   EXPECT_NE(0, get_crc(NULL));
@@ -71,10 +72,16 @@ TEST_F(FrameMessageTest, ChecksumTest)
   EXPECT_EQ(0, check_crc(&mMsg));
   EXPECT_GE(get_crc(&mMsg), 0);
   EXPECT_EQ(get_crc(&mMsg), get_crc(&mMsg));
+}
 
+TEST_F(FrameMessageTest, ChecksumSameNumTest)
+{
   FrameMessage msg;
-  memset(&msg, 0, sizeof(FrameMessage));
-  EXPECT_EQ(get_crc(&msg), 0);
+  for(uint8_t i=0; i<0xFF; i++)
+  {
+    memset(&msg, i, sizeof(FrameMessage));
+    EXPECT_EQ(get_crc(&msg), 0);
+  }
 }
 
 TEST_F(FrameMessageTest, ChecksumRandom)

@@ -44,12 +44,12 @@ static uint8_t calc_crc(const FrameMessage* const msg)
   uint8_t crc = 0;
 
   const int crc_bytes = sizeof(msg->crc);
-  const int bytes = sizeof(FrameMessage) - crc_bytes;
-  const char* msg_ptr = (char*)msg;
+  int bytes = sizeof(FrameMessage) - crc_bytes;
+  const char* msg_begin = (char*)msg;
 
-  for(int i=0; i<bytes; i++)
+  while(bytes--)
   {
-    crc ^= *(msg_ptr + i);
+    crc ^= *msg_begin++;
   }
   return crc;
 }
@@ -92,6 +92,4 @@ int check_crc(const FrameMessage* const msg)
     return (msg->crc == crc) ? 0 : -EDOM;
   }
 }
-
-
 
