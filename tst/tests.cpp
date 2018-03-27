@@ -6,15 +6,13 @@
  */
 
 #include "tests.h"
-
 #include "frame_msg.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <random>
 
-
-const unsigned int iterations = 2000000;
+static const unsigned int iterations = 2000000;
 
 TEST_F(FrameMessageTest, BufFrameConversion)
 {
@@ -30,14 +28,10 @@ TEST_F(FrameMessageTest, BufFrameConversion)
 
 TEST_F(FrameMessageTest, BufFrameConversionRandom)
 {
-  FrameMessage msg;
-  const uint16_t max = 0xFFFF;
-
-  unsigned int i=0;
-
   const int size = sizeof(FrameMessage);
   char buf[size];
 
+  unsigned int i=0;
   while(++i < iterations)
   {
     for(int i=0; i<size; i++)
@@ -45,10 +39,10 @@ TEST_F(FrameMessageTest, BufFrameConversionRandom)
       buf[i] = rand()%0xFF;
     }
 
-    FrameMessage l, r;
-    EXPECT_EQ(0, frame2buf(buf, &l));
-    EXPECT_EQ(0, buf2frame(&r, buf));
-    EXPECT_EQ(0, memcmp(&l, &r, size));
+    FrameMessage lhs, rhs;
+    ASSERT_EQ(0, frame2buf(buf, &lhs));
+    ASSERT_EQ(0, buf2frame(&rhs, buf));
+    ASSERT_EQ(0, memcmp(&lhs, &rhs, size));
   }
 }
 
@@ -85,14 +79,10 @@ TEST_F(FrameMessageTest, ChecksumTest)
 
 TEST_F(FrameMessageTest, ChecksumRandom)
 {
-  FrameMessage msg;
-  const uint16_t max = 0xFFFF;
-
-  unsigned int i=0;
-
   const int size = sizeof(FrameMessage);
   char buf[size];
 
+  unsigned int i=0;
   while(++i < iterations)
   {
     for(int i=0; i<size; i++)
@@ -101,7 +91,11 @@ TEST_F(FrameMessageTest, ChecksumRandom)
     }
 
     FrameMessage msg;
-    ASSERT_NE(0, buf2frame(&msg, buf));
+    ASSERT_EQ(0, buf2frame(&msg, buf));
+    ASSERT_EQ(0, set_crc(&msg));
+    ASSERT_EQ(0, set_crc(&msg));
+    ASSERT_EQ(0, set_crc(&msg));
+    ASSERT_EQ(0, set_crc(&msg));
     ASSERT_EQ(0, set_crc(&msg));
     ASSERT_EQ(0, check_crc(&msg));
     ASSERT_GE(get_crc(&msg), 0);

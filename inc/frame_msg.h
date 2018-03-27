@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-typedef struct
+typedef struct __attribute__((packed))
 {
   uint16_t start;
   uint16_t device;

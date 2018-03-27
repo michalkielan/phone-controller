@@ -42,10 +42,12 @@ int buf2frame(FrameMessage* dst, const char* const src)
 static uint8_t calc_crc(const FrameMessage* const msg)
 {
   uint8_t crc = 0;
-  const int len = sizeof(FrameMessage) - 1;
-  const char* msg_ptr = (char*)&msg;
 
-  for(int i=0; i<len; i++)
+  const int crc_bytes = sizeof(msg->crc);
+  const int bytes = sizeof(FrameMessage) - crc_bytes;
+  const char* msg_ptr = (char*)msg;
+
+  for(int i=0; i<bytes; i++)
   {
     crc ^= *(msg_ptr + i);
   }
