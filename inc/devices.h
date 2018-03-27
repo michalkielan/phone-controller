@@ -9,9 +9,30 @@
 #define INC_DEVICES_H_
 
 
-extern int (*set_get_device_data[]) (const int in, const int* const out);
+/**
+ * @brief Arrays of callbacks to set/get data from the i/o
+ *
+ * \param [in] data to set
+ * \param [in] data to get
+ */
+extern int (*io_call[]) (const int input, int* output);
 
 
-void init_devices();
+/**
+ * @brief Check if function pointer is valid
+ *
+ * \param [in] device id
+ *
+ * return 0 on sucess, otherwie 1
+ */
+int io_check_valid(const int io_id);
+
+
+/**
+ * @brief Init callbacks to NULL
+ *
+ */
+void io_init();
+
 
 #endif /* INC_DEVICES_H_ */
