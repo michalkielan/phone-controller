@@ -9,7 +9,8 @@ SRC+=${SRC_DIR}devices.c
 
 INC=${INC_DIR}
 
-CFLAGS=-Wall -g -ggdb3 -O2
+CFLAGS=-Wall -g -ggdb3 -O2 
+#-fsanitize=address
 CXXFLAGS=-std=c++11
 
 LINK=-lgtest

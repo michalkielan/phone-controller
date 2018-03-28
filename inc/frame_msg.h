@@ -10,6 +10,10 @@
 
 #include <stdint.h>
 
+/**
+ * @brief Frame message buffer structure, should be
+ *        packed to write/read bytes without any alignments
+ */
 typedef struct __attribute__((packed))
 {
   uint16_t start;

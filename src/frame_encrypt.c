@@ -11,8 +11,7 @@
 #include "frame_msg.h"
 #include "devices.h"
 
-
-static int checkCommand(const uint16_t cmd)
+static int check_command(const uint16_t cmd)
 {
   if(cmd <= CommandFirst || cmd >= CommandLast)
   {
@@ -24,7 +23,7 @@ static int checkCommand(const uint16_t cmd)
   }
 }
 
-static FrameResult checkFrameMessage(const FrameMessage* const dst)
+static FrameResult check_frame_message(const FrameMessage* const dst)
 {
   int res = check_crc(dst);
   if(res != 0)
@@ -37,7 +36,7 @@ static FrameResult checkFrameMessage(const FrameMessage* const dst)
     return START_INSTRUCTION_WRONG;
   }
 
-  res = checkCommand(dst->command);
+  res = check_command(dst->command);
   if(res != 0)
   {
     return INVALID_COMMAND;
@@ -46,7 +45,7 @@ static FrameResult checkFrameMessage(const FrameMessage* const dst)
   return 0;
 }
 
-FrameResult readFrameMessage(FrameMessage* dst, const char* const src)
+FrameResult read_frame_message(FrameMessage* dst, const char* const src)
 {
   const size_t N = sizeof(FrameMessage);
   char buf[N];
@@ -68,11 +67,15 @@ FrameResult readFrameMessage(FrameMessage* dst, const char* const src)
 }
 
 
-int writeMessage(FrameMessage* msg){}
-
-FrameResult runCommand(FrameMessage* dst)
+int write_message(FrameMessage* msg)
 {
-  const int res = readFrameMessage(dst);
+  //return hw_write_message(msg);
+  return 0;
+}
+
+FrameResult run_command(FrameMessage* dst)
+{
+  const int res = read_frame_message(dst);
   if(res != 0)
   {
     return res;
@@ -89,60 +92,43 @@ FrameResult runCommand(FrameMessage* dst)
 
   if(dst->command == Set)
   {
-    const int res = set_get_device_data[dst->device](dst->value, NULL);
+    const int res = io_call_task[dst->device](dst->value, NULL);
     if(res == 0)
     {
       response.command = ReceiveOk;
       response.value = 0;
       set_crc(&response);
-      return writeMessage(response);
+      return write_message(response);
     }
     else
     {
       response.command = ReceiveFailed;
       response.value = res;
       set_crc(&response);
-      return writeMessage(response);
+      return write_message(response);
     }
   }
 
   else
   {
     int get_value = 0;
-    const int res = set_get_device_data[dst->device](dst->value, &get_value);
+    const int res = io_call_task[dst->device](dst->value, &get_value);
     if(res == 0)
     {
       response.command = ReceiveOk;
       response.value = get_value;
       set_crc(&response);
-      return writeMessage(response);
+      return write_message(response);
     }
     else
     {
       response.command = ReceiveFailed;
       response.value = res;
       set_crc(&response);
-      return writeMessage(response);
+      return write_message(response);
     }
   }
-
 }
-
-
-//void (*setIO_functions[10]) (const int value);
-//
-//void setIO(const int device, const int value)
-//{
-//  setIO_functions[device](value);
-//}
-//
-//void decode(FrameMessage* dst)
-//{
-//  if(dst->command == SetIO)
-//  {
-//    setIO(dst->device, dst->value);
-//  }
-//}
 
 
 

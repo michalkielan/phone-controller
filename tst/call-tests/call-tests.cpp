@@ -7,54 +7,75 @@
 
 
 #include "call-tests.h"
-
 #include "devices.h"
 
+#include <vector>
 
-static const int value_set = 1554;
-static const int value_get = 5225;
 
-int set_io_0(const int input, int* output)
+class Led
 {
-  if(input == value_set)
+  static bool state;
+
+public:
+
+  static int set(const int input, int* output)
   {
+    state = input;
     return 0;
   }
-  else
-  {
-    return 1;
-  }
-}
 
-int get_io_1(const int input, int* output)
-{
-  (void)input;
-
-  if(output != NULL)
+  static int get(const int input, int* output)
   {
-    output = value_get;
+    *output = state;
     return 0;
   }
-  else
-  {
-    return 1;
-  }
-}
+};
+
+bool Led::state = 0;
 
 
-TEST_F(CallFunctionTest, test)
+TEST_F(CallFunctionTest, ledBlinking)
 {
-  const int dev_io_0 = 0;
-  const int dev_io_1 = 1;
+  const int led_set = io_add_task(&Led::set);
+  const int led_get = io_add_task(&Led::get);
 
-  io_call[dev_io_0] = set_io_0;
-  io_call[dev_io_1] = get_io_1;
+  for(int i=0; i<100; i++)
+  {
+    static int led_status = 0;
+    io_call_task(led_get, 0, &led_status);
+    io_call_task(led_set, !led_status, NULL);
+  }
 
-
-  EXPECT_EQ(0, io_call[dev_io_0](value_set, NULL));
-
-  int get_val = 0;
-  EXPECT_EQ(0, io_call[dev_io_0](0, &get_val));
-  EXPECT_EQ(value_get, get_val);
-
+  io_free();
 }
+
+int fun(const int input, int* output)
+{
+  *output = input;
+  return input;
+}
+
+TEST_F(CallFunctionTest, initManyFunctions)
+{
+  const int iterations = 100000;
+
+  std::vector<int> ids;
+  for(int i=0; i<iterations; i++)
+  {
+    const int id = io_add_task(&fun);
+    ASSERT_GE(id, 0);
+
+    ids.push_back(id);
+  }
+
+  for(unsigned int i=0; i< ids.size(); i++)
+  {
+    int get_val = 0;
+    EXPECT_EQ(i, io_call_task(i, i, &get_val));
+    EXPECT_EQ(get_val, i);
+  }
+
+  io_free();
+}
+
+

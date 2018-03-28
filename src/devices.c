@@ -5,46 +5,77 @@
  *      Author: Michal Kielan
  */
 
+#include "devices.h"
+
 #include <string.h>
-
-/**
- * @brief Maximum number of devices
- *
- */
-static const int io_max = 10;
-
-/**
- * @brief Arrays of callbacks to set/get data from the i/o
- *
- * \param [in] data to set
- * \param [in] data to get
- */
-int (*io_call[io_max]) (const int input, int* output);
+#include <malloc.h>
+#include <errno.h>
 
 
 /**
- * @brief Check if function pointer is valid
- *
- * \param [in] device id
- *
- * return 0 on sucess, otherwie 1
+ * @brief Structure of vector of callbacks to set/get
+ *        data from the io controllers
  */
-int io_check_valid(const int io_id)
+static IoCallbacksVector io_vector = {NULL, 0, 0};
+
+int io_add_task(const IoCallback io_callback)
 {
-  if(io_call[io_id] == NULL || io_id >= io_max)
+  const size_t size = sizeof(IoCallback);
+  IoCallback* tmp_callbacks = NULL;
+
+  if(io_vector.index == 0)
   {
-    return 1;
+    io_vector.capacity = 1;
+    const size_t bytes = io_vector.capacity * size;
+    tmp_callbacks = (IoCallback*)malloc(bytes);
+
+    if(tmp_callbacks == NULL)
+    {
+      io_free();
+      return -ENOMEM;
+    }
+    io_vector.io_callbacks = tmp_callbacks;
+  }
+
+  if(io_vector.index >= io_vector.capacity)
+  {
+    io_vector.capacity *= 2;
+    const size_t bytes = io_vector.capacity * size;
+    tmp_callbacks = (IoCallback*)realloc(io_vector.io_callbacks, bytes);
+
+    if(tmp_callbacks == NULL)
+    {
+      io_free();
+      return -ENOMEM;
+    }
+    io_vector.io_callbacks = tmp_callbacks;
+  }
+
+  io_vector.io_callbacks[io_vector.index] = io_callback;
+
+  const int id = io_vector.index;
+  ++io_vector.index;
+
+  return id;
+}
+
+int io_call_task(const size_t index, const int input, int* output)
+{
+  if(index > io_vector.index)
+  {
+    return -ERANGE;
   }
   else
   {
-    return 0;
+    return io_vector.io_callbacks[index](input, output);
   }
 }
 
-void i()
+void io_free()
 {
-  for(unsigned int i=0; i<io_max; i++)
-  {
-    io_call[i] = NULL;
-  }
+  free(io_vector.io_callbacks);
+  io_vector.io_callbacks = NULL;
+  io_vector.index = 0;
+  io_vector.capacity = 0;
 }
+

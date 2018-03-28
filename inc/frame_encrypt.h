@@ -8,7 +8,9 @@
 #ifndef INC_FRAME_ENCRYPT_H_
 #define INC_FRAME_ENCRYPT_H_
 
-
+/**
+ * @brief Error codes of frame write/read
+ */
 typedef enum
 {
   OK,
@@ -21,11 +23,19 @@ typedef enum
 
 } FrameResult;
 
+
+/**
+ * @brief Hard coded instructions
+ */
 enum Instruction
 {
   StartCode = 0x1234
 };
 
+
+/**
+ * @brief Commands to control io controllers
+ */
 enum Commands
 {
   CommandFirst,

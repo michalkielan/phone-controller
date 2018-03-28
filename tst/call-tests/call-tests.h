@@ -21,7 +21,6 @@ public:
 
   void SetUp( ) override
   {
-    io_init();
   }
 
   void TearDown( ) override
