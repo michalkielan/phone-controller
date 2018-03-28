@@ -11,6 +11,7 @@
 
 #include <vector>
 
+static const unsigned int iterations = 100000;
 
 class Led
 {
@@ -42,8 +43,8 @@ TEST_F(CallFunctionTest, ledBlinking)
   for(int i=0; i<100; i++)
   {
     static int led_status = 0;
-    io_call_task(led_get, 0, &led_status);
-    io_call_task(led_set, !led_status, NULL);
+    EXPECT_EQ(0, io_call_task(led_get, 0, &led_status));
+    EXPECT_EQ(0, io_call_task(led_set, !led_status, NULL));
   }
 
   io_free();
@@ -57,10 +58,8 @@ int fun(const int input, int* output)
 
 TEST_F(CallFunctionTest, initManyFunctions)
 {
-  const int iterations = 100000;
-
   std::vector<int> ids;
-  for(int i=0; i<iterations; i++)
+  for(unsigned int i=0; i<iterations; i++)
   {
     const int id = io_add_task(&fun);
     ASSERT_GE(id, 0);

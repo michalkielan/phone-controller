@@ -6,14 +6,19 @@ SRC+=${SRC_DIR}frame_msg.c
 SRC+=${SRC_DIR}crypt_xor.c
 SRC+=${SRC_DIR}crypto.c
 SRC+=${SRC_DIR}devices.c
+SRC+=${SRC_DIR}frame_encrypt.c
 
 INC=${INC_DIR}
 
+SANITIZERS=
+#SANITIZERS+=-fsanitize=address
+
 CFLAGS=-Wall -g -ggdb3 -O2 
-#-fsanitize=address
-CXXFLAGS=-std=c++11
+
+CXXFLAGS=-std=c++11 ${SANITIZERS}
 
 LINK=-lgtest
+LINK+=${SANITIZERS}
 
 
 all: frame_tests crypto_tests call_tests
@@ -46,4 +51,7 @@ TEST_CALL_SRC+=${TEST_CALL_DIR}main.cpp
 
 call_tests:
 	${CXX} ${TEST_CALL_SRC} ${SRC} ${CXXFLAGS} ${CFLAGS} -I${INC} -o run-${TEST_CALL} ${LINK}
+	
+clean:
+	rm -rf run-*
 
