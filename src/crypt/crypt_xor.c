@@ -5,8 +5,8 @@
  *      Author: Michal Kielan
  */
 
-#include "crypt_xor.h"
-#include "key_64.h"
+#include "crypt/crypt_xor.h"
+#include "crypt/key_64.h"
 
 #include <errno.h>
 

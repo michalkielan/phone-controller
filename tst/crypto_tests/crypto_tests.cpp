@@ -7,7 +7,7 @@
 
 #include "crypto_tests.h"
 
-#include "crypto.h"
+#include "crypt/crypto.h"
 
 static const unsigned int bufferLimit = 64;
 static const unsigned int iterations = 2000000;

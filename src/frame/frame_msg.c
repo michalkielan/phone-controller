@@ -5,7 +5,7 @@
  *      Author: Michal Kielan
  */
 
-#include "frame_msg.h"
+#include "frame/frame_msg.h"
 
 #include <errno.h>
 #include <string.h>

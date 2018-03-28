@@ -3,6 +3,8 @@ INC_DIR=../inc/
 
 SRC=
 SRC+=$(wildcard $(SRC_DIR)/*.c)
+SRC+=$(wildcard $(SRC_DIR)/crypt/*.c)
+SRC+=$(wildcard $(SRC_DIR)/frame/*.c)
 
 INC=${INC_DIR}
 

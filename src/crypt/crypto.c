@@ -5,7 +5,7 @@
  *      Author: Michal Kielan
  */
 
-#include <crypt_xor.h>
+#include <crypt/crypt_xor.h>
 
 int encrypt(void* dst, const void* const src, const size_t size)
 {

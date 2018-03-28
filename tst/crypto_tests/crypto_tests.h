@@ -9,7 +9,7 @@
 #define TST_CRYPTO_TESTS_CRYPTO_TESTS_H_
 
 
-#include "crypto.h"
+#include "crypt/crypto.h"
 
 #include <string.h>
 #include <stdio.h>

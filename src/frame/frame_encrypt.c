@@ -5,10 +5,9 @@
  *      Author: Michal Kielan
  */
 
-#include "frame_encrypt.h"
-
-#include "crypto.h"
-#include "frame_msg.h"
+#include "crypt/crypto.h"
+#include "frame/frame_encrypt.h"
+#include "frame/frame_msg.h"
 #include "devices.h"
 
 static int check_command(const uint16_t cmd)
