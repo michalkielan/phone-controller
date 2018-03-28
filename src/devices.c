@@ -8,19 +8,18 @@
 #include <string.h>
 
 /**
- * @brief Maximum number of each device
+ * @brief Maximum number of devices
  *
  */
-static const int devices_max = 10;
+static const int io_max = 10;
 
 /**
- * @brief Arrays of function pointers to set/get data from the
- *        devices.
+ * @brief Arrays of callbacks to set/get data from the i/o
  *
  * \param [in] data to set
  * \param [in] data to get
  */
-int (*set_get_device_data[devices_max]) (const int in, const int* const out);
+int (*io_call[io_max]) (const int input, int* output);
 
 
 /**
@@ -30,9 +29,9 @@ int (*set_get_device_data[devices_max]) (const int in, const int* const out);
  *
  * return 0 on sucess, otherwie 1
  */
-int checkDeviceValid(const int device_id)
+int io_check_valid(const int io_id)
 {
-  if(set_get_device_data[device_id] == NULL || device_id >= devices_max)
+  if(io_call[io_id] == NULL || io_id >= io_max)
   {
     return 1;
   }
@@ -42,11 +41,10 @@ int checkDeviceValid(const int device_id)
   }
 }
 
-void init_devices()
+void i()
 {
-  for(unsigned int i=0; i<devices_max; i++)
+  for(unsigned int i=0; i<io_max; i++)
   {
-    set_get_device_data[i] = NULL;
+    io_call[i] = NULL;
   }
-
 }

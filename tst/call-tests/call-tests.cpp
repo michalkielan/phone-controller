@@ -11,21 +11,50 @@
 #include "devices.h"
 
 
-int setIO_device_1(const int in, const int* const out)
+static const int value_set = 1554;
+static const int value_get = 5225;
+
+int set_io_0(const int input, int* output)
 {
-  std::cout << "IO device 1: " << in << std::endl;
-  return 0;
+  if(input == value_set)
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
 }
 
+int get_io_1(const int input, int* output)
+{
+  (void)input;
+
+  if(output != NULL)
+  {
+    output = value_get;
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
+}
 
 
 TEST_F(CallFunctionTest, test)
 {
-  init_devices();
-  const int dev_led_1 = 0;
+  const int dev_io_0 = 0;
+  const int dev_io_1 = 1;
 
-  set_get_device_data[dev_led_1] = setIO_device_1;
+  io_call[dev_io_0] = set_io_0;
+  io_call[dev_io_1] = get_io_1;
 
-  set_get_device_data[dev_led_1](3, NULL);
+
+  EXPECT_EQ(0, io_call[dev_io_0](value_set, NULL));
+
+  int get_val = 0;
+  EXPECT_EQ(0, io_call[dev_io_0](0, &get_val));
+  EXPECT_EQ(value_get, get_val);
 
 }

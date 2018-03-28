@@ -9,7 +9,7 @@
 #define TST_CALL_TESTS_CALL_TESTS_H_
 
 
-#include "frame_encrypt.h"
+#include "devices.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -21,6 +21,7 @@ public:
 
   void SetUp( ) override
   {
+    io_init();
   }
 
   void TearDown( ) override
