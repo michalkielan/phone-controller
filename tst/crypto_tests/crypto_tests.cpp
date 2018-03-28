@@ -5,7 +5,7 @@
  *      Author: Michal Kielan
  */
 
-#include "crypto-tests.h"
+#include "crypto_tests.h"
 
 #include "crypto.h"
 

@@ -6,7 +6,8 @@
  */
 
 
-#include "call-tests.h"
+#include "call_tests.h"
+
 #include "devices.h"
 
 #include <vector>

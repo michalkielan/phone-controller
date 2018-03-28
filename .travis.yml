@@ -1,0 +1,21 @@
+dist: trusty
+os: linux
+language: cpp
+sudo: required
+
+script:
+  - cd tst
+  - make test
+  - make run-tests
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - autotools-dev
+      - libgles2-mesa
+      - libgles2-mesa-dev
+      - gcc-7
+      - g++-7
+      - libgtest-dev

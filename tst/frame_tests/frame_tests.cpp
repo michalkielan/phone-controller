@@ -5,8 +5,7 @@
  *      Author: Michal Kielan
  */
 
-#include "frame-tests.h"
-
+#include "frame_tests.h"
 #include "frame_msg.h"
 
 #include <string.h>

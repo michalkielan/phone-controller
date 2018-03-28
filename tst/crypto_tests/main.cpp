@@ -6,7 +6,7 @@
  */
 
 
-#include "call-tests.h"
+#include "crypto_tests.h"
 
 int main(int argc, char **argv) {
 

@@ -6,10 +6,10 @@
  */
 
 #include "crypt_xor.h"
+#include "key_64.h"
 
 #include <errno.h>
 
-static const char*  key_64 = "5rt5@^Y265^y6Y^$2U&d5u&U%36yhteU&5@6gfs4$c3Y%$54yw212r@$R@(*^%$>";
 static const size_t key_size = strlen(key_64);
 
 int crypt_xor(void* dst, const void* const src, const size_t size)
