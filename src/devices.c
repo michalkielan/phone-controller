@@ -21,27 +21,25 @@ static IoCallbacksVector io_vector = {NULL, 0, 0};
 int io_add_task(const IoCallback io_callback)
 {
   const size_t size = sizeof(IoCallback);
-  IoCallback* tmp_callbacks = NULL;
+  const size_t start_capacity = 1;
 
   if(io_vector.index == 0)
   {
-    io_vector.capacity = 1;
+    io_vector.capacity = start_capacity;
     const size_t bytes = io_vector.capacity * size;
-    tmp_callbacks = (IoCallback*)malloc(bytes);
+    io_vector.io_callbacks = (IoCallback*)malloc(bytes);
 
-    if(tmp_callbacks == NULL)
+    if(io_vector.io_callbacks == NULL)
     {
-      io_free();
       return -ENOMEM;
     }
-    io_vector.io_callbacks = tmp_callbacks;
   }
 
   if(io_vector.index >= io_vector.capacity)
   {
     io_vector.capacity *= 2;
     const size_t bytes = io_vector.capacity * size;
-    tmp_callbacks = (IoCallback*)realloc(io_vector.io_callbacks, bytes);
+    IoCallback* const tmp_callbacks = (IoCallback*)realloc(io_vector.io_callbacks, bytes);
 
     if(tmp_callbacks == NULL)
     {
