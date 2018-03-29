@@ -6,6 +6,7 @@
  */
 
 #include "devices.h"
+#include "logger/logger.h"
 
 #include <string.h>
 #include <malloc.h>
@@ -20,6 +21,12 @@ static IoCallbacksVector io_vector = {NULL, 0, 0};
 
 int io_add_task(const IoCallback io_callback)
 {
+  if(io_callback == NULL)
+  {
+    LOGF(LOG_ERROR, "Function pointer should not be nullptr");
+    return -EINVAL;
+  }
+
   const size_t size = sizeof(IoCallback);
   const size_t start_capacity = 1;
 
@@ -31,6 +38,7 @@ int io_add_task(const IoCallback io_callback)
 
     if(io_vector.io_callbacks == NULL)
     {
+      LOGF(LOG_ERROR, "Allocating vector first element failed, out of memory");
       return -ENOMEM;
     }
   }
@@ -43,6 +51,7 @@ int io_add_task(const IoCallback io_callback)
 
     if(tmp_callbacks == NULL)
     {
+      LOGF(LOG_ERROR, "Reallocing vector failed, out of memory");
       io_free();
       return -ENOMEM;
     }
@@ -61,10 +70,12 @@ int io_call_task(const size_t index, const int input, int* output)
 {
   if(index > io_vector.index)
   {
+    LOGF(LOG_ERROR, "The index %d of function is out of range", index);
     return -ERANGE;
   }
   else
   {
+    LOGF(LOG_INFO, "Callback: %d calling correctly", index);
     return io_vector.io_callbacks[index](input, output);
   }
 }

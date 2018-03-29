@@ -10,10 +10,10 @@
 
 
 #include "devices.h"
+#include "logger/logger.h"
 
 #include <string.h>
 #include <stdio.h>
-
 #include <gtest/gtest.h>
 
 class CallFunctionTest : public ::testing::Test {
@@ -21,6 +21,7 @@ public:
 
   void SetUp( ) override
   {
+    set_log_level(LOG_NONE);
   }
 
   void TearDown( ) override

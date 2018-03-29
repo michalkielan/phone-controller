@@ -9,11 +9,13 @@
 #include "frame/frame_encrypt.h"
 #include "frame/frame_msg.h"
 #include "devices.h"
+#include "logger/logger.h"
 
 static int check_command(const uint16_t cmd)
 {
   if(cmd <= CommandFirst || cmd >= CommandLast)
   {
+    LOGF(LOG_ERROR, "Command %d, not found", cmd);
     return 1;
   }
   else
@@ -27,17 +29,20 @@ static FrameResult check_frame_message(const FrameMessage* const dst)
   int res = check_crc(dst);
   if(res != 0)
   {
+    LOGF(LOG_ERROR, "Checksum %d is wrong", get_crc(dst));
     return CRC_ERROR;
   }
 
   if(dst->start == StartCode)
   {
+    LOGF(LOG_ERROR, "Start instruction wrong");
     return START_INSTRUCTION_WRONG;
   }
 
   res = check_command(dst->command);
   if(res != 0)
   {
+    LOGF(LOG_ERROR, "Invalid command");
     return INVALID_COMMAND;
   }
 
@@ -52,12 +57,14 @@ FrameResult read_frame_message(FrameMessage* dst, const char* const src)
   int res = decrypt(dst, src, N);
   if(res != 0)
   {
+    LOGF(LOG_ERROR, "Decryption failed");
     return FAILED_DECRYPT;
   }
 
   res = buf2frame(dst, buf);
   if(res != 0)
   {
+    LOGF(LOG_ERROR, "Invalid inpput buffer");
     return INVALID_DATA;
   }
 
@@ -87,10 +94,12 @@ FrameResult run_command(FrameMessage* dst)
       set_crc(&response);
       if(write_message(&response) ==  0)
       {
+        LOGF(LOG_INFO, "Response frame message sent correctly");
         return OK;
       }
       else
       {
+        LOGF(LOG_ERROR, "Responing message, error code: %d", res);
         return ERROR_SENDING_MESSAGE;
       }
     }
@@ -101,10 +110,12 @@ FrameResult run_command(FrameMessage* dst)
       set_crc(&response);
       if(write_message(&response) ==  0)
       {
+        LOGF(LOG_INFO, "Frame message sent correctly");
         return OK;
       }
       else
       {
+        LOGF(LOG_INFO, "Frame message sent correctly");
         return ERROR_SENDING_MESSAGE;
       }
     }

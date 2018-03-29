@@ -2,16 +2,17 @@ SRC_DIR=../src/
 INC_DIR=../inc/
 
 SRC=
-SRC+=$(wildcard $(SRC_DIR)/*.c)
-SRC+=$(wildcard $(SRC_DIR)/crypt/*.c)
-SRC+=$(wildcard $(SRC_DIR)/frame/*.c)
+SRC+=$(wildcard $(SRC_DIR)*.c)
+SRC+=$(wildcard $(SRC_DIR)crypt/*.c)
+SRC+=$(wildcard $(SRC_DIR)frame/*.c)
+SRC+=$(wildcard $(SRC_DIR)logger/*.c)
 
 INC=${INC_DIR}
 
 SANITIZERS=
 #SANITIZERS+=-fsanitize=address
 
-CFLAGS=-Wall -g -ggdb3 -O2 
+CFLAGS=-Wall -g -ggdb3 -O2 -DLOG_ENABLED
 
 CXXFLAGS=-std=c++11 ${SANITIZERS}
 
