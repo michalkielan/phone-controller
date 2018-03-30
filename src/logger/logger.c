@@ -21,10 +21,17 @@ static const char* log_level_str[] = {"", "ERROR", "WARNING", "INFO", "VERBOSE"}
 
 
 /**
- * @brief variable to set the log level
+ * @brief variable to set the log level, default is LOG_INFO
  */
 static LogLevel log_level_max = LOG_INFO;
 
+
+/**
+ * @brief Get actual time for logs, this function should be implemented
+ *        in bare metal using RTC
+ *
+ * return time structure
+ */
 struct tm get_actual_time()
 {
   struct tm t;

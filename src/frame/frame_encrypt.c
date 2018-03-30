@@ -20,6 +20,7 @@ static int check_command(const uint16_t cmd)
   }
   else
   {
+    LOGF(LOG_VERBOSE, "Command %d correct", cmd);
     return 0;
   }
 }
@@ -64,7 +65,7 @@ FrameResult read_frame_message(FrameMessage* dst, const char* const src)
   res = buf2frame(dst, buf);
   if(res != 0)
   {
-    LOGF(LOG_ERROR, "Invalid inpput buffer");
+    LOGF(LOG_ERROR, "Invalid input buffer");
     return INVALID_DATA;
   }
 
@@ -74,85 +75,82 @@ FrameResult read_frame_message(FrameMessage* dst, const char* const src)
 
 int write_message(FrameMessage* msg)
 {
+  set_crc(&msg);
   //return hw_write_message(msg);
   return 0;
 }
 
-FrameResult run_command(FrameMessage* dst)
+
+void call()
 {
+
+}
+
+void call_set(FrameMessage* msg, FrameMessage* response)
+{
+  const int res = io_call_task(msg->device, msg->value, NULL);
+  if(res == 0)
+  {
+    LOGF(LOG_INFO, "Calling io_call_task successed");
+    response->command = ResponseOk;
+    response->value = 0;
+  }
+  else
+  {
+    LOGF(LOG_ERROR, "Calling io_call_task failed");
+    response->command = ResponseFailed;
+    response->value = res;
+  }
+}
+
+void call_get(FrameMessage* msg, FrameMessage* response)
+{
+  int data = 0;
+  const int res = io_call_task(msg->device, msg->value, data);
+  if(res == 0)
+  {
+    LOGF(LOG_INFO, "Calling io_call_task successed");
+    response->command = ResponseOk;
+    response->value = data;
+  }
+  else
+  {
+    LOGF(LOG_ERROR, "Calling io_call_task failed");
+    response->command = ResponseFailed;
+    response->value = res;
+  }
+}
+
+FrameResult run_command(FrameMessage* msg)
+{
+  if(msg == NULL)
+  {
+    return INVALID_DATA;
+  }
   FrameMessage response;
   response.start = StartCode;
-  response.device = dst->device;
+  response.device = msg->device;
 
-  if(dst->command == Set)
+  int res = 0;
+  if(msg->command == Set)
   {
-    const int res = io_call_task(dst->device, dst->value, NULL);
-    if(res == 0)
-    {
-      response.command = ReceiveOk;
-      response.value = 0;
-      set_crc(&response);
-      if(write_message(&response) ==  0)
-      {
-        LOGF(LOG_INFO, "Response frame message sent correctly");
-        return OK;
-      }
-      else
-      {
-        LOGF(LOG_ERROR, "Responing message, error code: %d", res);
-        return ERROR_SENDING_MESSAGE;
-      }
-    }
-    else
-    {
-      response.command = ReceiveFailed;
-      response.value = res;
-      set_crc(&response);
-      if(write_message(&response) ==  0)
-      {
-        LOGF(LOG_INFO, "Frame message sent correctly");
-        return OK;
-      }
-      else
-      {
-        LOGF(LOG_INFO, "Frame message sent correctly");
-        return ERROR_SENDING_MESSAGE;
-      }
-    }
+    call_set(msg, &response);
   }
 
   else
   {
-    int get_value = 0;
-    const int res = io_call_task(dst->device, dst->value, &get_value);
-    if(res == 0)
-    {
-      response.command = ReceiveOk;
-      response.value = get_value;
-      set_crc(&response);
-      if(write_message(&response) ==  0)
-      {
-        return OK;
-      }
-      else
-      {
-        return ERROR_SENDING_MESSAGE;
-      }
-    }
-    else
-    {
-      response.command = ReceiveFailed;
-      response.value = res;
-      set_crc(&response);
-      if(write_message(&response) ==  0)
-      {
-        return OK;
-      }
-      else
-      {
-        return ERROR_SENDING_MESSAGE;
-      }
-    }
+    call_get(msg, &response);
+  }
+
+  if(write_message(&response) ==  0)
+  {
+    LOGF(LOG_INFO, "Response sent correctly");
+    return OK;
+  }
+  else
+  {
+    LOGF(LOG_ERROR, "Response sent failed");
+    return ERROR_SENDING_MESSAGE;
   }
 }
 

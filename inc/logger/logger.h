@@ -23,9 +23,9 @@ typedef enum
 
 
 /**
- * @brief This is the base function for printing logs,
- *        should not be called by hand, the macro 'LOG'
- *        must be used instead
+ * @brief This is the base function for printing logs, should not be called by hand,
+ *        the macro 'LOGF' must be used instead. The macro 'LOG_ENABLED' should
+ *        be set to see the output logs.
  *
  * \param [in] log level enumerated type
  * \param [in] file name
@@ -47,9 +47,11 @@ void set_log_level(const LogLevel level);
 
 
 /**
- * @brief Log format - this is the function-macro for logger,
- *        the output format is:
+ * @brief Log format - this is the user interface function-macro for logger,
+ *        the output format is: [time] [log level] [file] [function:line] [log message]
  *        00:00:00 [ERROR] [path/to/file.c(crypt_xor:20)]: log message
+ *        Use it like printf function, and type log level as a first parameter
+ *
  *
  * \param [in] log level enumerated type
  * \param [in] format variadic argument

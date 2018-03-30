@@ -44,11 +44,32 @@ int buf2frame(FrameMessage* dst, const char* const src)
 }
 
 
-static uint8_t calc_crc(const FrameMessage* const msg)
+/**
+ * @brief Get FrameMessage buffer size in bytes
+ *
+ * \param [in] frame message structure
+ *
+ * return size of frame message (without crc)
+ */
+static int get_frame_size(const FrameMessage* const msg)
 {
   const int crc_bytes = sizeof(msg->crc);
-  int bytes = sizeof(FrameMessage) - crc_bytes;
-  const char* msg_begin = (char*)msg;
+  return sizeof(FrameMessage) - crc_bytes;
+}
+
+
+/**
+ * @brief Calculate checksum using xor, the checksum in calculating
+ *        by xor each bytes of frame
+ *
+ * \param [in] frame message structure
+ *
+ * return checksum (one byte)
+ */
+static uint8_t calc_crc(const FrameMessage* const msg)
+{
+  int bytes = get_frame_size(msg);
+  const char* msg_begin = (const char*)msg;
 
   uint8_t crc = 0;
 

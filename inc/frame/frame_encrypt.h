@@ -42,8 +42,8 @@ enum Commands
   CommandFirst,
   Set,
   Get,
-  ReceiveOk,
-  ReceiveFailed,
+  ResponseOk,
+  ResponseFailed,
   CommandLast
 };
 

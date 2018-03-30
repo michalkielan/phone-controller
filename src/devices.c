@@ -14,10 +14,24 @@
 
 
 /**
- * @brief Structure of vector of callbacks to set/get
- *        data from the io controllers
+ * @brief Structure for vector of callbacks, this structure is
+ *        for singleton object, is should not be visible in header
+ *        files and the object should not be created from the user
+ */
+typedef struct
+{
+  IoCallback* io_callbacks;
+  size_t      capacity;
+  size_t      index;
+} IoCallbacksVector;
+
+
+/**
+ * @brief Singleton with vector of callbacks to set/get
+ *        data from the io controllers.
  */
 static IoCallbacksVector io_vector = {NULL, 0, 0};
+
 
 int io_add_task(const IoCallback io_callback)
 {
@@ -66,6 +80,7 @@ int io_add_task(const IoCallback io_callback)
   return id;
 }
 
+
 int io_call_task(const size_t index, const int input, int* output)
 {
   if(index > io_vector.index)
@@ -79,6 +94,7 @@ int io_call_task(const size_t index, const int input, int* output)
     return io_vector.io_callbacks[index](input, output);
   }
 }
+
 
 void io_free()
 {

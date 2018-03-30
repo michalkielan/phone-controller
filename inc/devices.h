@@ -20,18 +20,6 @@ typedef int (*IoCallback)(const int input, int* output);
 
 
 /**
- * @brief Structure for vector of callbacks
- *
- */
-typedef struct
-{
-  IoCallback* io_callbacks;
-  size_t      capacity;
-  size_t      index;
-} IoCallbacksVector;
-
-
-/**
  * @brief Create task to controll io device, it dynamically allocate
  *        vector of function pointers, the reallocations happens
  *        automatically when there is no place for new elements

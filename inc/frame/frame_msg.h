@@ -31,7 +31,7 @@ typedef struct __attribute__((packed))
  * \param [in] frame structure to be converted to buffer
  *
  * \return 0 on sucess, error code otherwise
- * - EINVAL when the pointers are not valid
+ * - -EINVAL when the pointers are not valid
  */
 int frame2buf(char* dst, const FrameMessage* const src);
 
@@ -43,7 +43,7 @@ int frame2buf(char* dst, const FrameMessage* const src);
  * \param [in] buffer of bytes to be converted to frame structure
  *
  * \return 0 on sucess, error code otherwise
- * - EINVAL when the pointers are not valid
+ * - -EINVAL when the pointers are not valid
  */
 int buf2frame(FrameMessage* dst, const char* const src);
 
@@ -54,7 +54,7 @@ int buf2frame(FrameMessage* dst, const char* const src);
  * \param [in] frame message structure
  *
  * \return 0 on sucess, error code otherwise
- * - EINVAL when the pointers are not valid
+ * - -EINVAL when the pointers are not valid
  */
 int get_crc(const FrameMessage* const msg);
 
@@ -65,7 +65,7 @@ int get_crc(const FrameMessage* const msg);
  * \param [in] frame message structure
  *
  * \return 0 on sucess, error code otherwise
- * - EINVAL when the pointers are not valid
+ * - -EINVAL when the pointers are not valid
  */
 int set_crc(FrameMessage* msg);
 
@@ -76,8 +76,8 @@ int set_crc(FrameMessage* msg);
  * \param [in] frame message structure
  *
  * \return 0 on sucess, error code otherwise
- * - EINVAL when the pointers are not valid
- * - EDOM checkum is wrong
+ * - -EINVAL when the pointers are not valid
+ * - -EDOM checkum is wrong
  */
 int check_crc(const FrameMessage* const msg);
 
