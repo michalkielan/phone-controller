@@ -9,6 +9,8 @@
 #include "call_tests.h"
 
 #include "devices.h"
+#include "frame/frame_encrypt.h"
+#include "frame/frame_msg.h"
 
 #include <vector>
 
@@ -77,5 +79,50 @@ TEST_F(CallFunctionTest, initManyFunctions)
 
   io_free();
 }
+
+
+void led_set(const bool state) {}
+
+int led_set_io(const int in, int* out)
+{
+  (void)out;
+  led_set(in);
+  return 0;
+}
+
+TEST_F(CallFunctionTest, test)
+{
+  const int id = io_add_task(&led_set_io);
+
+  /// buffer from reader
+  FrameMessage msg;
+  msg.start = StartCode;
+  msg.device = id;
+  msg.command = Set;
+  msg.value = 1;
+  set_crc(&msg);
+
+  char buffer[sizeof(msg)];
+
+  frame2buf(buffer, &msg);
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

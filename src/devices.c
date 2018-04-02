@@ -15,7 +15,7 @@
 
 /**
  * @brief Structure for vector of callbacks, this structure is
- *        for singleton object, is should not be visible in header
+ *        for singleton object, it should not be visible in header
  *        files and the object should not be created from the user
  */
 typedef struct
@@ -81,7 +81,7 @@ int io_add_task(const IoCallback io_callback)
 }
 
 
-int io_call_task(const size_t index, const int input, int* output)
+int io_call_task(const size_t index, void* data, const size_t size)
 {
   if(index > io_vector.index)
   {
@@ -91,7 +91,7 @@ int io_call_task(const size_t index, const int input, int* output)
   else
   {
     LOGF(LOG_INFO, "Callback: %d calling correctly", index);
-    return io_vector.io_callbacks[index](input, output);
+    return io_vector.io_callbacks[index](data, size);
   }
 }
 

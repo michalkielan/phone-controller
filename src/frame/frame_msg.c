@@ -8,53 +8,87 @@
 #include "frame/frame_msg.h"
 #include "logger/logger.h"
 
-#include <errno.h>
+#include "error_codes.h"
 #include <string.h>
 
-int frame2buf(char* dst, const FrameMessage* const src)
+int frame2buf(void* dst, const FrameMessage* const src)
 {
-  if(dst == NULL || src == NULL)
+  int frame_bytes = get_frame_size(src);
+  const char* msg_begin = (const char*)src;
+  char* buffer = (char*)dst;
+
+  while(frame_bytes--)
   {
-    LOGF(LOG_ERROR, "Buffers should not be nullptr");
-    return -EINVAL;
+      *buffer++ = *msg_begin++;
   }
-  else
+
+  int buffer_bytes = src->num_bytes;
+  const char* buffer_begin = (const char*)src->data;
+
+  while(buffer_bytes--)
   {
-    const size_t bytes = sizeof(FrameMessage);
-    memcpy(dst, src, bytes);
-    LOGF(LOG_VERBOSE, "Buffers copy correctly");
-    return 0;
+      *buffer++ = *buffer_begin++;
   }
+
+  *buffer++ = src->crc;
+
+  LOGF(LOG_VERBOSE, "Buffers copy correctly");
+  return Ok;
 }
 
-int buf2frame(FrameMessage* dst, const char* const src)
+int buf2frame(FrameMessage* dst, const void* const src)
 {
-  if(dst == NULL || src == NULL)
+  int frame_bytes = get_frame_size(src);
+  const char* msg_begin = (const char*)src;
+  char* buffer = (char*)dst;
+
+  while(frame_bytes--)
   {
-    LOGF(LOG_ERROR, "Buffers should not be nullptr");
-    return -EINVAL;
+      *buffer++ = *msg_begin++;
   }
-  else
+
+  int buffer_bytes = dst->num_bytes;
+  dst->data = (char*)malloc(dst->num_bytes);
+
+  const char* buffer_begin = (const char*)dst->data;
+
+  while(buffer_bytes--)
   {
-    const size_t bytes = sizeof(FrameMessage);
-    memcpy(dst, src, bytes);
-    LOGF(LOG_VERBOSE, "Buffers copy correctly");
-    return 0;
+      *buffer++ = *buffer_begin++;
   }
+
+  LOGF(LOG_VERBOSE, "Buffers copy correctly");
+  return Ok;
+}
+
+void buf_release(FrameMessage* msg)
+{
+  free(msg->data);
 }
 
 
 /**
- * @brief Get FrameMessage buffer size in bytes
+ * @brief Get frame messgae size
  *
  * \param [in] frame message structure
  *
- * return size of frame message (without crc)
+ * return size of frame message (without crc and data pointer)
  */
-static int get_frame_size(const FrameMessage* const msg)
+size_t get_frame_size(const FrameMessage* const msg)
 {
-  const int crc_bytes = sizeof(msg->crc);
-  return sizeof(FrameMessage) - crc_bytes;
+  int bytes = sizeof(FrameMessage);
+  bytes -= sizeof(msg->data);
+  bytes -= sizeof(msg->crc);
+  return bytes;
+}
+
+
+size_t get_buffer_size(const FrameMessage* const msg)
+{
+  int bytes = sizeof(FrameMessage);
+  bytes -= sizeof(msg->data);
+  bytes += msg->num_bytes;
+  return bytes;
 }
 
 
@@ -68,6 +102,7 @@ static int get_frame_size(const FrameMessage* const msg)
  */
 static uint8_t calc_crc(const FrameMessage* const msg)
 {
+  assert(msg != NULL);
   int bytes = get_frame_size(msg);
   const char* msg_begin = (const char*)msg;
 
@@ -82,45 +117,20 @@ static uint8_t calc_crc(const FrameMessage* const msg)
 
 int get_crc(const FrameMessage* const msg)
 {
-  if(msg == NULL)
-  {
-    LOGF(LOG_ERROR, "Frame message should not be nullptr");
-    return -EINVAL;
-  }
-  else
-  {
-    LOGF(LOG_VERBOSE, "Get checksum correctly");
-    return calc_crc(msg);
-  }
+  return calc_crc(msg);
 }
 
 int set_crc(FrameMessage* msg)
 {
-  if(msg == NULL)
-  {
-    LOGF(LOG_ERROR, "Frame message should not be nullptr");
-    return -EINVAL;
-  }
-  else
-  {
-    const uint8_t crc = calc_crc(msg);
-    msg->crc = crc;
-    LOGF(LOG_VERBOSE, "Set checksum correctly");
-    return 0;
-  }
+  const uint8_t crc = calc_crc(msg);
+  msg->crc = crc;
+  LOGF(LOG_VERBOSE, "Set checksum correctly");
+  return Ok;
 }
 
 int check_crc(const FrameMessage* const msg)
 {
-  if(msg == NULL)
-  {
-    LOGF(LOG_ERROR, "Frame message should not be nullptr");
-    return -EINVAL;
-  }
-  else
-  {
-    const uint8_t crc = calc_crc(msg);
-    return (msg->crc == crc) ? 0 : -EDOM;
-  }
+  const uint8_t crc = calc_crc(msg);
+  return (msg->crc == crc) ? Ok : Failed;
 }
 

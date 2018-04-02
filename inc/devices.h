@@ -13,10 +13,10 @@
 /**
  * @brief Typedef for callbacks to set/get data from the i/o
  *
- * \param [in] data to set
- * \param [in] data to get
+ * \param [in] data pointer
+ * \param [in] data size
  */
-typedef int (*IoCallback)(const int input, int* output);
+typedef int (*IoCallback)(void* data, const size_t size);
 
 
 /**
@@ -41,7 +41,7 @@ int io_add_task(const IoCallback io_callback);
  *
  * \return
  */
-int io_call_task(const size_t index, const int input, int* output);
+int io_call_task(const size_t index, void* data, const size_t size);
 
 
 /**

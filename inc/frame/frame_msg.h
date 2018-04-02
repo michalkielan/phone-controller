@@ -19,7 +19,8 @@ typedef struct __attribute__((packed))
   uint16_t start;
   uint16_t device;
   uint16_t command;
-  uint16_t value;
+  uint16_t num_bytes;
+  uint8_t* data;
   uint8_t  crc;
 } FrameMessage;
 
@@ -33,7 +34,7 @@ typedef struct __attribute__((packed))
  * \return 0 on sucess, error code otherwise
  * - -EINVAL when the pointers are not valid
  */
-int frame2buf(char* dst, const FrameMessage* const src);
+int frame2buf(void* dst, const FrameMessage* const src);
 
 
 /**
@@ -45,7 +46,7 @@ int frame2buf(char* dst, const FrameMessage* const src);
  * \return 0 on sucess, error code otherwise
  * - -EINVAL when the pointers are not valid
  */
-int buf2frame(FrameMessage* dst, const char* const src);
+int buf2frame(FrameMessage* dst, const void* const src);
 
 
 /**

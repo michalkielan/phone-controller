@@ -8,22 +8,7 @@
 #ifndef INC_FRAME_ENCRYPT_H_
 #define INC_FRAME_ENCRYPT_H_
 
-/**
- * @brief Error codes of frame write/read
- */
-typedef enum
-{
-  OK,
-  FAILED_DECRYPT,
-  INVALID_DATA,
-  CRC_ERROR,
-  START_INSTRUCTION_WRONG,
-  INVALID_COMMAND,
-  INVALID_DEVICE,
-  ERROR_SENDING_MESSAGE
-
-} FrameResult;
-
+#include "error_codes.h"
 
 /**
  * @brief Hard coded instructions

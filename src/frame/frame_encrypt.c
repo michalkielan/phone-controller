@@ -10,6 +10,11 @@
 #include "frame/frame_msg.h"
 #include "devices.h"
 #include "logger/logger.h"
+#include "sim/sim.h"
+
+
+static const size_t max_buffer_size = 60;
+static uint8_t message_buffer[max_buffer_size];
 
 static int check_command(const uint16_t cmd)
 {
@@ -25,32 +30,32 @@ static int check_command(const uint16_t cmd)
   }
 }
 
-static FrameResult check_frame_message(const FrameMessage* const dst)
+static int check_frame_message(const FrameMessage* const dst)
 {
   int res = check_crc(dst);
   if(res != 0)
   {
     LOGF(LOG_ERROR, "Checksum %d is wrong", get_crc(dst));
-    return CRC_ERROR;
+    return InvalidChecksum;
   }
 
-  if(dst->start == StartCode)
+  if(dst->start != StartCode)
   {
     LOGF(LOG_ERROR, "Start instruction wrong");
-    return START_INSTRUCTION_WRONG;
+    return InvalidInstruction;
   }
 
   res = check_command(dst->command);
   if(res != 0)
   {
     LOGF(LOG_ERROR, "Invalid command");
-    return INVALID_COMMAND;
+    return InvalidCommand;
   }
 
-  return OK;
+  return Ok;
 }
 
-FrameResult read_frame_message(FrameMessage* dst, const char* const src)
+int read_frame_message(FrameMessage* dst, const char* const src)
 {
   const size_t N = sizeof(FrameMessage);
   char buf[N];
@@ -59,26 +64,61 @@ FrameResult read_frame_message(FrameMessage* dst, const char* const src)
   if(res != 0)
   {
     LOGF(LOG_ERROR, "Decryption failed");
-    return FAILED_DECRYPT;
+    return DecryptFailed;
   }
 
   res = buf2frame(dst, buf);
   if(res != 0)
   {
     LOGF(LOG_ERROR, "Invalid input buffer");
-    return INVALID_DATA;
+    return InvalidData;
   }
 
   return check_frame_message(dst);
 }
 
 
+
+
 int write_message(FrameMessage* msg)
 {
-  set_crc(&msg);
-  //return hw_write_message(msg);
-  return 0;
+  set_crc(msg);
+
+  const size_t size = get_buffer_size(msg);
+  char* buf = (char*)malloc(size);
+  if(buf == NULL)
+  {
+    LOGF(LOG_ERROR, "Allocating message buffer failed");
+    return BadAlloc;
+  }
+
+  const int res = frame2buf(buf, msg);
+  if(res != 0)
+  {
+    LOGF(LOG_ERROR, "Creating buffer frame failed");
+    return Failed;
+  }
+
+  res = sim_send_data(buf, size);
+  if(res != 0)
+  {
+    LOGF(LOG_ERROR, "Send sms failed");
+    return Failed;
+  }
+
+  free(buf);
+
+  LOGF(LOG_INFO, "Send sms correct");
+  return Ok;
 }
+
+
+int get_message()
+{
+
+  //const int res = sim_receive_data(message_buffer, );
+}
+
 
 
 void call()
@@ -88,50 +128,56 @@ void call()
 
 void call_set(FrameMessage* msg, FrameMessage* response)
 {
-  const int res = io_call_task(msg->device, msg->value, NULL);
+  const int res = io_call_task(msg->device, msg->data, &msg->num_bytes);
   if(res == 0)
   {
     LOGF(LOG_INFO, "Calling io_call_task successed");
     response->command = ResponseOk;
-    response->value = 0;
+    response->num_bytes = 0;
+    response->data = NULL;
   }
   else
   {
     LOGF(LOG_ERROR, "Calling io_call_task failed");
     response->command = ResponseFailed;
-    response->value = res;
+    response->num_bytes = 1;
+    response->data =  message_buffer;
+    response->data[0] = res;
   }
+}
+
+int get_data(char* ptr, const size_t N)
+{
+  char data[] = {1,2,3,4,5};
+  ptr = data;
 }
 
 void call_get(FrameMessage* msg, FrameMessage* response)
 {
-  int data = 0;
-  const int res = io_call_task(msg->device, msg->value, data);
+  assert(msg != NULL);
+  assert(response != NULL);
+  msg->data = message_buffer;
+  const int res = io_call_task(msg->device, msg->data, &msg->num_bytes);
   if(res == 0)
   {
     LOGF(LOG_INFO, "Calling io_call_task successed");
     response->command = ResponseOk;
-    response->value = data;
   }
   else
   {
     LOGF(LOG_ERROR, "Calling io_call_task failed");
     response->command = ResponseFailed;
-    response->value = res;
+    response->data[0] = res;
   }
 }
 
-FrameResult run_command(FrameMessage* msg)
+int run_command(FrameMessage* msg)
 {
-  if(msg == NULL)
-  {
-    return INVALID_DATA;
-  }
+  assert(msg != NULL);
   FrameMessage response;
   response.start = StartCode;
   response.device = msg->device;
 
-  int res = 0;
   if(msg->command == Set)
   {
     call_set(msg, &response);
@@ -145,12 +191,12 @@ FrameResult run_command(FrameMessage* msg)
   if(write_message(&response) ==  0)
   {
     LOGF(LOG_INFO, "Response sent correctly");
-    return OK;
+    return Ok;
   }
   else
   {
     LOGF(LOG_ERROR, "Response sent failed");
-    return ERROR_SENDING_MESSAGE;
+    return ErrorSendingMessage;
   }
 }
 
