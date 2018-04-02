@@ -10,16 +10,14 @@
 #include "logger/logger.h"
 
 #include <errno.h>
+#include <assert.h>
 
 static const size_t key_size = strlen(key_64);
 
 int crypt_xor(void* dst, const void* const src, const size_t size)
 {
-  if(dst == NULL || src == NULL)
-  {
-    LOGF(LOG_ERROR, "Buffers should not be nullptr");
-    return EINVAL;
-  }
+	assert(dst != NULL);
+	assert(src != NULL);
 
   if(size > key_size)
   {
