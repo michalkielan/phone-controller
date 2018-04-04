@@ -1,8 +1,10 @@
-/*
- * logger.c
+/**
+ * @file logger.c
  *
- *  Created on: Mar 28, 2018
- *      Author: Michal Kielan
+ * @brief Interface for logger
+ *
+ * @date 28 Mar 2018
+ * @author Michal Kielan
  */
 
 #include "logger/logger.h"

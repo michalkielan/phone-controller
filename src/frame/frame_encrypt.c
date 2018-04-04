@@ -1,12 +1,14 @@
-/*
- * frame_encrypt.c
+/**
+ * @file frame_encrypt.c
  *
- *  Created on: Mar 27, 2018
- *      Author: Michal Kielan
+ * @brief
+ *
+ * @date 27 Mar 2018
+ * @author Michal Kielan
  */
 
-#include "io_controller.h"
 #include "frame/frame_encrypt.h"
+#include "io_controller.h"
 #include "crypt/crypto.h"
 #include "frame/frame_msg.h"
 #include "logger/logger.h"

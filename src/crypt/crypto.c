@@ -1,11 +1,13 @@
-/*
- * crypto.c
+/**
+ * @file crypt.c
  *
- *  Created on: Mar 27, 2018
- *      Author: Michal Kielan
+ * @brief Interface for crypt algorithms
+ *
+ * @date 27 Mar 2018
+ * @author Michal Kielan
  */
 
-#include <crypt/crypt_xor.h>
+#include "crypt/crypt_xor.h"
 
 int encrypt(void* dst, const void* const src, const size_t size)
 {

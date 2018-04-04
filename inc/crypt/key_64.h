@@ -1,9 +1,9 @@
 /**
  * @file key_64.h
  *
- * @brief File with symetric key
+ * @brief Symetric key reference
  *
- * @date 28 Mar Sep 2018
+ * @date 28 Mar 2018
  * @author Michal Kielan
  */
 

@@ -3,7 +3,7 @@
  *
  * @brief Frame message structure implementation
  *
- * @date 26 Mar Sep 2018
+ * @date 26 Mar 2018
  * @author Michal Kielan
  */
 

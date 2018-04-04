@@ -3,7 +3,7 @@
  *
  * @brief Interface to control io devices
  *
- * @date 31 Mar Sep 2018
+ * @date 31 Mar 2018
  * @author Michal Kielan
  */
 

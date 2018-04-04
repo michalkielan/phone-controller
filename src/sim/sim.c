@@ -1,8 +1,10 @@
-/*
- * sim.c
+/**
+ * @file sim.c
  *
- *  Created on: Apr 1, 2018
- *      Author: Michal Kielan
+ * @brief
+ *
+ * @date 1 Apr 2018
+ * @author Michal Kielan
  */
 
 

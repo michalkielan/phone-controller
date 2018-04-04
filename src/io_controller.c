@@ -1,9 +1,12 @@
-/*
- * io_controller.c
+/**
+ * @file io_controller.c
  *
- *  Created on: Mar 27, 2018
- *      Author: Michal Kielan
+ * @brief Interface to control io devices
+ *
+ * @date 27 Mar 2018
+ * @author Michal Kielan
  */
+
 
 #include "io_controller.h"
 #include "logger/logger.h"

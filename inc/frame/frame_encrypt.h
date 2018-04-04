@@ -3,7 +3,7 @@
  *
  * @brief
  *
- * @date 27 Mar Sep 2018
+ * @date 27 Mar 2018
  * @author Michal Kielan
  */
 

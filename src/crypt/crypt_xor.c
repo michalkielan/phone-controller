@@ -1,8 +1,10 @@
-/*
- * crypt_xor.c
+/**
+ * @file crypt_xor.c
  *
- *  Created on: Mar 27, 2018
- *      Author: Michal Kielan
+ * @brief Implementation of xor crypt algorithm
+ *
+ * @date 27 Mar 2018
+ * @author Michal Kielan
  */
 
 #include "crypt/crypt_xor.h"

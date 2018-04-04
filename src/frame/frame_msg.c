@@ -1,8 +1,10 @@
-/*
- * frame_msg.c
+/**
+ * @file frame_msg.h
  *
- *  Created on: Mar 26, 2018
- *      Author: Michal Kielan
+ * @brief
+ *
+ * @date 26 Mar 2018
+ * @author Michal Kielan
  */
 
 #include "frame/frame_msg.h"

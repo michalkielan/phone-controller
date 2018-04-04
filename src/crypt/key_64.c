@@ -1,8 +1,10 @@
-/*
- * key.c
+/**
+ * @file key_64.c
  *
- *  Created on: Apr 4, 2018
- *      Author: Michal Kielan
+ * @brief Symetric key storage
+ *
+ * @date 4 Apr 2018
+ * @author Michal Kielan
  */
 
 #include "crypt/key_64.h"

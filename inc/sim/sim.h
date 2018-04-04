@@ -3,7 +3,7 @@
  *
  * @brief Interface for sim module receive/transmit data
  *
- * @date 1 Apr Sep 2018
+ * @date 1 Apr 2018
  * @author Michal Kielan
  */
 

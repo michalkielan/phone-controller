@@ -3,7 +3,7 @@
  *
  * @brief Interface for logger
  *
- * @date 28 Mar Sep 2018
+ * @date 28 Mar 2018
  * @author Michal Kielan
  */
 
