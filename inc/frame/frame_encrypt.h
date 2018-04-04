@@ -1,28 +1,14 @@
-/*
- * frame_encrypt.h
+/**
+ * @file frame_encrypt.h
  *
- *  Created on: Mar 27, 2018
- *      Author: Michal Kielan
+ * @brief
+ *
+ * @date 27 Mar Sep 2018
+ * @author Michal Kielan
  */
 
 #ifndef INC_FRAME_ENCRYPT_H_
 #define INC_FRAME_ENCRYPT_H_
-
-/**
- * @brief Error codes of frame write/read
- */
-typedef enum
-{
-  OK,
-  FAILED_DECRYPT,
-  INVALID_DATA,
-  CRC_ERROR,
-  START_INSTRUCTION_WRONG,
-  INVALID_COMMAND,
-  INVALID_DEVICE,
-  ERROR_SENDING_MESSAGE
-
-} FrameResult;
 
 
 /**

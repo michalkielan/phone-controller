@@ -8,8 +8,7 @@
 
 #include "call_tests.h"
 
-#include "devices.h"
-
+#include <io_controller.h>
 #include <vector>
 
 static const unsigned int iterations = 100000;

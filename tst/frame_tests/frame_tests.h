@@ -24,7 +24,7 @@ public:
 	  mMsg.command = 13;
 	  mMsg.crc = 12;
 	  mMsg.device = 98;
-	  mMsg.value = 1;
+	  mMsg.data = 1;
 	  mMsg.crc = 0;
 	}
 

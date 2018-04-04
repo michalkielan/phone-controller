@@ -35,7 +35,7 @@ static LogLevel log_level_max = LOG_INFO;
 struct tm get_actual_time()
 {
   struct tm t;
-
+  // get time from RTC in uC
   return t;
 }
 

@@ -9,12 +9,12 @@
 #define TST_CALL_TESTS_CALL_TESTS_H_
 
 
-#include "devices.h"
 #include "logger/logger.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <gtest/gtest.h>
+#include <io_controller.h>
 
 class CallFunctionTest : public ::testing::Test {
 public:

@@ -1,9 +1,12 @@
-/*
- * logger.h
+/**
+ * @file logger.h
  *
- *  Created on: Mar 28, 2018
- *      Author: Michal Kielan
+ * @brief Interface for logger
+ *
+ * @date 28 Mar Sep 2018
+ * @author Michal Kielan
  */
+
 
 #ifndef INC_LOGGER_LOGGER_H_
 #define INC_LOGGER_LOGGER_H_
@@ -27,11 +30,11 @@ typedef enum
  *        the macro 'LOGF' must be used instead. The macro 'LOG_ENABLED' should
  *        be set to see the output logs.
  *
- * \param [in] log level enumerated type
- * \param [in] file name
- * \param [in] function name
- * \param [in] line number
- * \param [in] fmt, format variadic argument
+ * @param [in] log level enumerated type
+ * @param [in] file name
+ * @param [in] function name
+ * @param [in] line number
+ * @param [in] fmt, format variadic argument
  *
  */
 void log_base(const LogLevel level, const char *file, const char* function, const int line, const char *fmt, ...);
@@ -41,7 +44,7 @@ void log_base(const LogLevel level, const char *file, const char* function, cons
  * @brief Set the log level, every logs with level lower than
  *        the input will be ignored, the default level is 'LOG_INFO'
  *
- *  \param [in] log level
+ *  @param [in] log level
  */
 void set_log_level(const LogLevel level);
 
@@ -53,8 +56,8 @@ void set_log_level(const LogLevel level);
  *        Use it like printf function, and type log level as a first parameter
  *
  *
- * \param [in] log level enumerated type
- * \param [in] format variadic argument
+ * @param [in] log level enumerated type
+ * @param [in] format variadic argument
  *
  */
 #define LOGF(LOG_LEVEL, ...) log_base(LOG_LEVEL, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)

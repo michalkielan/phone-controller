@@ -1,16 +1,16 @@
 /*
- * devices.c
+ * io_controller.c
  *
  *  Created on: Mar 27, 2018
  *      Author: Michal Kielan
  */
 
-#include "devices.h"
+#include "io_controller.h"
 #include "logger/logger.h"
 
+#include <errno.h>
 #include <string.h>
 #include <malloc.h>
-#include <errno.h>
 
 
 /**
@@ -78,6 +78,73 @@ int io_add_task(const IoCallback io_callback)
   ++io_vector.index;
 
   return id;
+}
+
+
+size_t io_get_size()
+{
+  return io_vector.index;
+}
+
+
+/**
+ * @brief Remove last element in callback vector
+ *
+ * \return 0 on sucess, error code otherwise
+ */
+static int remove_last()
+{
+  io_vector.io_callbacks[io_vector.index] = NULL;
+  --io_vector.index;
+  return 0;
+}
+
+
+/**
+ * @brief Remove element in the middle of vector
+ *
+ * \param [in] index of element to be removed
+ *
+ * \return 0 on sucess, error code otherwise *
+ */
+static int remove_middle(const size_t index)
+{
+  const size_t size = sizeof(IoCallback);
+  const size_t bytes = io_vector.capacity * size;
+  IoCallback* tmp_callbacks = (IoCallback*)malloc(bytes);
+  if(tmp_callbacks == NULL)
+  {
+    return -1;
+  }
+
+  size_t id = 0;
+  for(size_t i=0; i< io_vector.index; i++)
+  {
+    if(id == index)
+    {
+      ++i;
+    }
+    tmp_callbacks[id++] = io_vector.io_callbacks[i];
+  }
+
+  free(io_vector.io_callbacks);
+  io_vector.io_callbacks = tmp_callbacks;
+  tmp_callbacks = NULL;
+
+  return 0;
+}
+
+int io_remove_task(const size_t index)
+{
+  if(io_vector.index == index)
+  {
+    return remove_last();
+  }
+
+  else
+  {
+    return remove_middle(index);
+  }
 }
 
 

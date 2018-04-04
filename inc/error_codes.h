@@ -1,8 +1,10 @@
-/*
- * error_code.h
+/**
+ * @file error_codes.h
  *
- *  Created on: Mar 31, 2018
- *      Author: Michal Kielan
+ * @brief Error codes
+ *
+ * @date 31 Mar Sep 2018
+ * @author Michal Kielan
  */
 
 #ifndef INC_ERROR_CODES_H_

@@ -12,17 +12,17 @@
 #include <errno.h>
 #include <assert.h>
 
-static const size_t key_size = strlen(key_64);
-
 int crypt_xor(void* dst, const void* const src, const size_t size)
 {
 	assert(dst != NULL);
 	assert(src != NULL);
 
+	const size_t key_size = strlen(key_64);
+
   if(size > key_size)
   {
     LOGF(LOG_ERROR, "Buffer size should not be bigger than, keysize: %d", key_size);
-    return EINVAL;
+    return -EINVAL;
   }
 
   size_t len = size;
